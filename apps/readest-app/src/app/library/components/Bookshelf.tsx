@@ -2,16 +2,13 @@ import clsx from 'clsx';
 import * as React from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { PiPlus } from 'react-icons/pi';
 import { Book } from '@/types/book';
 import { LibraryCoverFitType, LibraryViewModeType } from '@/types/settings';
 import { useEnv } from '@/context/EnvContext';
 import { useThemeStore } from '@/store/themeStore';
-import { useAutoFocus } from '@/hooks/useAutoFocus';
 import { useSettingsStore } from '@/store/settingsStore';
 import { useLibraryStore } from '@/store/libraryStore';
 import { useTranslation } from '@/hooks/useTranslation';
-import { useResponsiveSize } from '@/hooks/useResponsiveSize';
 import { navigateToLibrary, navigateToReader, showReaderWindow } from '@/utils/nav';
 import { createBookFilter, createBookSorter } from '../utils/libraryUtils';
 import { formatTitle } from '@/utils/book';
@@ -29,7 +26,6 @@ interface BookshelfProps {
   isSelectMode: boolean;
   isSelectAll: boolean;
   isSelectNone: boolean;
-  handleImportBooks: () => void;
   handleBookDownload: (book: Book) => Promise<boolean>;
   handleBookUpload: (book: Book, syncBooks?: boolean) => Promise<boolean>;
   handleBookDelete: (book: Book, syncBooks?: boolean) => Promise<boolean>;
@@ -44,7 +40,6 @@ const Bookshelf: React.FC<BookshelfProps> = ({
   isSelectMode,
   isSelectAll,
   isSelectNone,
-  handleImportBooks,
   handleBookUpload,
   handleBookDownload,
   handleBookDelete,
@@ -75,8 +70,6 @@ const Bookshelf: React.FC<BookshelfProps> = ({
   const [importBookUrl] = useState(searchParams?.get('url') || '');
 
   const isImportingBook = useRef(false);
-  const iconSize15 = useResponsiveSize(15);
-  const autofocusRef = useAutoFocus<HTMLDivElement>();
 
   const { setCurrentBookshelf, setLibrary } = useLibraryStore();
   const { setSelectedBooks, getSelectedBooks, toggleSelectedBook } = useLibraryStore();
@@ -275,7 +268,6 @@ const Bookshelf: React.FC<BookshelfProps> = ({
   return (
     <div className='bookshelf'>
       <div
-        ref={autofocusRef}
         tabIndex={-1}
         className={clsx(
           'bookshelf-items transform-wrapper focus:outline-none',
@@ -314,33 +306,6 @@ const Bookshelf: React.FC<BookshelfProps> = ({
             }
           />
         ))}
-        {viewMode === 'grid' && currentBookshelfItems.length > 0 && (
-          <div
-            className={clsx('mx-0 my-2 sm:mx-4 sm:my-4')}
-            style={
-              coverFit === 'fit' && viewMode === 'grid'
-                ? {
-                    display: 'flex',
-                    paddingBottom: `${iconSize15 + 24}px`,
-                  }
-                : undefined
-            }
-          >
-            <button
-              aria-label={_('Import Books')}
-              className={clsx(
-                'border-1 bg-base-100 hover:bg-base-300/50',
-                'flex items-center justify-center',
-                'aspect-[28/41] w-full',
-              )}
-              onClick={handleImportBooks}
-            >
-              <div className='flex items-center justify-center'>
-                <PiPlus className='size-10' color='gray' />
-              </div>
-            </button>
-          </div>
-        )}
       </div>
       {loading && (
         <div className='fixed inset-0 z-50 flex items-center justify-center'>

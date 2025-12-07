@@ -3,6 +3,7 @@
 import clsx from 'clsx';
 import * as React from 'react';
 import { MdChevronRight } from 'react-icons/md';
+import { PiPlus } from 'react-icons/pi';
 import { useState, useRef, useEffect, Suspense, useCallback } from 'react';
 import { ReadonlyURLSearchParams, useRouter, useSearchParams } from 'next/navigation';
 import { OverlayScrollbarsComponent, OverlayScrollbarsComponentRef } from 'overlayscrollbars-react';
@@ -52,6 +53,7 @@ import { BookDetailModal } from '@/components/metadata';
 import { UpdaterWindow } from '@/components/UpdaterWindow';
 import { CatalogDialog } from './components/OPDSDialog';
 import { MigrateDataWindow } from './components/MigrateDataWindow';
+import ImportMenu from './components/ImportMenu';
 import { useDragDropImport } from './hooks/useDragDropImport';
 import { Toast } from '@/components/Toast';
 import { getBreadcrumbs } from './utils/libraryUtils';
@@ -742,7 +744,6 @@ const LibraryPageContent = ({ searchParams }: { searchParams: ReadonlyURLSearchP
                 isSelectMode={isSelectMode}
                 isSelectAll={isSelectAll}
                 isSelectNone={isSelectNone}
-                handleImportBooks={handleImportBooks}
                 handleBookUpload={handleBookUpload}
                 handleBookDownload={handleBookDownload}
                 handleBookDelete={handleBookDelete('both')}
@@ -783,6 +784,33 @@ const LibraryPageContent = ({ searchParams }: { searchParams: ReadonlyURLSearchP
           handleBookDeleteLocalCopy={handleBookDelete('local')}
           handleBookMetadataUpdate={handleUpdateMetadata}
         />
+      )}
+      {showBookshelf && !isSelectMode && !showDetailsBook && !showCatalogManager && (
+        <div
+          className='dropdown dropdown-top dropdown-end fixed bottom-0 right-0 z-30'
+          style={{
+            paddingBottom: `${(insets?.bottom || 0) + 16}px`,
+            paddingRight: `${(insets?.right || 0) + 16}px`,
+          }}
+        >
+          <button
+            tabIndex={0}
+            aria-label={_('Import Books')}
+            className='btn btn-primary btn-circle shadow-lg transition-shadow hover:shadow-xl'
+          >
+            <PiPlus size={28} />
+          </button>
+          <ImportMenu
+            setIsDropdownOpen={(open) => {
+              if (!open) {
+                const elem = document.activeElement as HTMLElement;
+                elem?.blur();
+              }
+            }}
+            onImportBooks={handleImportBooks}
+            onOpenCatalogManager={() => setShowCatalogManager(true)}
+          />
+        </div>
       )}
       <AboutWindow />
       <UpdaterWindow />

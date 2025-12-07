@@ -74,7 +74,7 @@ const BookCover: React.FC<BookCoverProps> = memo<BookCoverProps>(
               src={book.metadata?.coverImageUrl || book.coverImageUrl!}
               alt={book.title}
               fill={true}
-              className={clsx('cover-image crop-cover-img object-cover', imageClassName)}
+              className={clsx('cover-image crop-cover-img rounded object-cover', imageClassName)}
               onLoad={handleImageLoad}
               onError={handleImageError}
             />
@@ -97,7 +97,7 @@ const BookCover: React.FC<BookCoverProps> = memo<BookCoverProps>(
                 height={0}
                 sizes='100vw'
                 className={clsx(
-                  'cover-image fit-cover-img h-auto max-h-full w-auto max-w-full shadow-md',
+                  'cover-image fit-cover-img h-auto max-h-full w-auto max-w-full rounded shadow-md',
                   imageClassName,
                 )}
                 onLoad={handleImageLoad}
@@ -112,7 +112,7 @@ const BookCover: React.FC<BookCoverProps> = memo<BookCoverProps>(
 
         <div
           className={clsx(
-            'fallback-cover invisible absolute inset-0 rounded-none p-2',
+            'fallback-cover invisible absolute inset-0 rounded p-2',
             'text-neutral-content text-center font-serif font-medium',
             isPreview ? 'bg-base-200/50' : 'bg-base-100',
           )}
